@@ -1,4 +1,4 @@
-import "@styles/App.css";
+import "@styles/App.scss";
 import Geolocation from "@components/geolocation/Geolocation";
 
 const App = () => {

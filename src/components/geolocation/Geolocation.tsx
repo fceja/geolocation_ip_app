@@ -2,7 +2,7 @@ import axios from "axios";
 import { AxiosResponse, AxiosError } from "axios";
 import { useState } from "react";
 
-import "@styles/Geolocation.css";
+import "@styles/Geolocation.scss";
 import AxiosClient from "@utils/AxiosClient";
 import { IPInfoType } from "@appTypes/index";
 
