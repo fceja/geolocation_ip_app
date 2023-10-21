@@ -1,32 +1,30 @@
-import axios from "axios";
+// import axios from "axios";
 import { AxiosResponse, AxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "@styles/Geolocation.scss";
 import AxiosClient from "@utils/AxiosClient";
+import { fetchApiInfoData } from "@/api/ipInfo/ipInfoApi";
 import { IPInfoType } from "@appTypes/index";
 
-let ipData: IPInfoType | null = null;
 const Geolocation = () => {
-  axios
-    .get(
-      `https://ipinfo.io/json?token=${process.env.REACT_APP_IP_INFO_API_TOKEN}`,
-      {
-        timeout: 5000,
-      }
-    )
-    .then((response) => {
-      console.log("ipInfo response", response.data);
-      ipData = response.data;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-
+  const [ipInfo, setIpInfo] = useState<IPInfoType | null>(null);
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchApiInfoData();
+        setIpInfo(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleGetLocation = () => {
     if ("geolocation" in navigator) {
@@ -56,12 +54,12 @@ const Geolocation = () => {
   return (
     <div className="main-container">
       <button onClick={handleGetLocation}>Get My Location</button>
-      {location && ipData && (
+      {location && ipInfo && (
         <div className="coords">
           <p>Latitude: {location.latitude}</p>
           <p>Longitude: {location.longitude}</p>
           <h2>IP data</h2>
-          <p>IP: {`${ipData.ip}`}</p>
+          <p>IP: {`${ipInfo.ip}`}</p>
         </div>
       )}
     </div>
