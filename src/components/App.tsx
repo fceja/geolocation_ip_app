@@ -1,5 +1,5 @@
-import "../styles/App.css";
-import Geolocation from "./geolocation/Geolocation";
+import "@styles/App.css";
+import Geolocation from "@components/geolocation/Geolocation";
 
 const App = () => {
   return (

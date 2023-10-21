@@ -1,10 +1,10 @@
+import axios from "axios";
+import { AxiosResponse, AxiosError } from "axios";
 import { useState } from "react";
 
-import "../../styles/Geolocation.css";
-import axios from "axios";
-import AxiosClient from "../../utils/AxiosClient";
-import { AxiosResponse, AxiosError } from "axios";
-import { IPInfoType } from "../../types";
+import "@styles/Geolocation.css";
+import AxiosClient from "@utils/AxiosClient";
+import { IPInfoType } from "@appTypes/index";
 
 let ipData: IPInfoType | null = null;
 const Geolocation = () => {
@@ -22,6 +22,7 @@ const Geolocation = () => {
     .catch((error) => {
       console.error(error);
     });
+
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
