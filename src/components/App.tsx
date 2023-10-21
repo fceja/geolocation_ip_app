@@ -1,16 +1,13 @@
-import GeolocationComponent from "./GeolocationComponent";
-import IPInfo from "./IPInfo";
-
 import "../styles/App.css";
+import Geolocation from "./geolocation/Geolocation";
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      <h1>Geolocation</h1>
-      <GeolocationComponent />
-      <IPInfo />
+      <h1>Geo Location</h1>
+      <Geolocation />
     </div>
   );
-}
+};
 
 export default App;

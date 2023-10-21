@@ -1,5 +1,4 @@
 import axios from "axios";
-import { AxiosResponse, AxiosError } from "axios";
 
 const AxiosClient = axios.create({
   baseURL: process.env.REACT_APP_PROFILE_API_URL,
@@ -10,6 +9,3 @@ const AxiosClient = axios.create({
 });
 
 export default AxiosClient;
-
-export type CustomAxiosResponse = AxiosResponse;
-export type CustomAxiosError = AxiosError;

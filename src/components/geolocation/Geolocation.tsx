@@ -1,12 +1,27 @@
 import { useState } from "react";
 
-import "../styles/Geolocation.css";
-import AxiosClient, {
-  CustomAxiosError,
-  CustomAxiosResponse,
-} from "../utils/AxiosClient";
+import "../../styles/Geolocation.css";
+import axios from "axios";
+import AxiosClient from "../../utils/AxiosClient";
+import { AxiosResponse, AxiosError } from "axios";
+import { IPInfoType } from "../../types";
 
-function GeolocationComponent() {
+let ipData: IPInfoType | null = null;
+const Geolocation = () => {
+  axios
+    .get(
+      `https://ipinfo.io/json?token=${process.env.REACT_APP_IP_INFO_API_TOKEN}`,
+      {
+        timeout: 5000,
+      }
+    )
+    .then((response) => {
+      console.log("ipInfo response", response.data);
+      ipData = response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -25,10 +40,10 @@ function GeolocationComponent() {
           contactEmail: process.env.REACT_APP_CONTACT_EMAIL,
           contactEmailMessage: `latitude: ${latitude} longitude: ${longitude}`,
         })
-          .then((response: CustomAxiosResponse) => {
+          .then((response: AxiosResponse) => {
             console.log("response:", response);
           })
-          .catch((error: CustomAxiosError) => {
+          .catch((error: AxiosError) => {
             console.error("error:", error);
           });
       });
@@ -40,14 +55,16 @@ function GeolocationComponent() {
   return (
     <div className="main-container">
       <button onClick={handleGetLocation}>Get My Location</button>
-      {location && (
-        <div>
+      {location && ipData && (
+        <div className="coords">
           <p>Latitude: {location.latitude}</p>
           <p>Longitude: {location.longitude}</p>
+          <h2>IP data</h2>
+          <p>IP: {`${ipData.ip}`}</p>
         </div>
       )}
     </div>
   );
-}
+};
 
-export default GeolocationComponent;
+export default Geolocation;
