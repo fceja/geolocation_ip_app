@@ -1,14 +1,13 @@
-// import axios from "axios";
-import { AxiosResponse, AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 import "@styles/Geolocation.scss";
-import AxiosClient from "@utils/AxiosClient";
-import { fetchApiInfoData } from "@/api/ipInfo/ipInfoApi";
 import { IPInfoType } from "@appTypes/index";
+import { fetchApiInfoData } from "@/api/ipInfo/ipInfoApi";
+import Loading from "@components/loading/Loading";
 
 const Geolocation = () => {
-  const [ipInfo, setIpInfo] = useState<IPInfoType | null>(null);
+  const [ipData, setIpData] = useState<IPInfoType | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -18,7 +17,7 @@ const Geolocation = () => {
     const fetchData = async () => {
       try {
         const data = await fetchApiInfoData();
-        setIpInfo(data);
+        setIpData(data);
       } catch (error) {
         console.error(error);
       }
@@ -26,25 +25,21 @@ const Geolocation = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (location) {
+      setIsLoading(false);
+    }
+  }, [location]);
+
   const handleGetLocation = () => {
     if ("geolocation" in navigator) {
+      setIsLoading(true);
+
       navigator.geolocation.getCurrentPosition(function (position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
 
         setLocation({ latitude, longitude });
-
-        AxiosClient.post("/sendEmail", {
-          contactName: process.env.REACT_APP_CONTACT_NAME,
-          contactEmail: process.env.REACT_APP_CONTACT_EMAIL,
-          contactEmailMessage: `latitude: ${latitude} longitude: ${longitude}`,
-        })
-          .then((response: AxiosResponse) => {
-            console.log("response:", response);
-          })
-          .catch((error: AxiosError) => {
-            console.error("error:", error);
-          });
       });
     } else {
       console.log("Geolocation is not available in this browser.");
@@ -54,14 +49,19 @@ const Geolocation = () => {
   return (
     <div className="main-container">
       <button onClick={handleGetLocation}>Get My Location</button>
-      {location && ipInfo && (
+      {location && ipData && (
         <div className="coords">
           <p>Latitude: {location.latitude}</p>
           <p>Longitude: {location.longitude}</p>
+          <br />
           <h2>IP data</h2>
-          <p>IP: {`${ipInfo.ip}`}</p>
+          <p>IP: {`${ipData.ip}`}</p>
+          <p>Country: {`${ipData.country}`}</p>
+          <p>City: {`${ipData.city}`}</p>
+          <p>region: {`${ipData.region}`}</p>
         </div>
       )}
+      {isLoading && <Loading />}
     </div>
   );
 };
